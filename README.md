@@ -1,2 +1,3 @@
 # ENGF0002-tetris
-Tetris Auto-player src for ENGF0002 @ucl
+Tetris Auto-player coursework src
+ENGF0002 @ucl
