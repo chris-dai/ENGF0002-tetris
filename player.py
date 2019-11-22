@@ -21,7 +21,7 @@ class RandomPlayer(Player):
             Direction.Drop
         ])
 
-a = -0.510066 # agg_height
+a = -0.552 # agg_height
 b = 0.760666 # complete_lines
 c = -0.35663 # holes
 d = -0.184483 # bumpiness
@@ -71,7 +71,7 @@ class Chris:
                         max_score = score
                         best_rot = rotation
                         best_x = x
-        except Exception:
+        except Exception: # fix the problem of crashing on gradr
             best_rot = 0
             best_x = 0
         return best_rot, best_x
