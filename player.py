@@ -41,39 +41,47 @@ class Chris:
                 final_move.append(Direction.Right)
         final_move.append(Direction.Drop)
         return final_move
+    
+    def best_score(self, board, rotation, x):
+        game_copy = board.clone()
+        old_score = game_copy.score
+        for i in range (rotation):
+            game_copy.rotate(Rotation.Clockwise)
+        if x < 0:
+            for i in range(abs(x)):
+                game_copy.move(Direction.Left)
+        if x > 0:
+            for i in range(x):
+                game_copy.move(Direction.Right)
+        game_copy.move(Direction.Drop)
+
+        agg_height_score = self.agg_height(game_copy)
+        holes_score = self.holes(game_copy)
+        bum_score = self.bumpiness(game_copy)
+        complete_lines_score = self.complete_lines(game_copy.score - old_score)
+        score = agg_height_score + holes_score + bum_score + complete_lines_score # heuristic score
+        return score, game_copy
 
     def choose_best_move(self,board):
         ''' clone the board and do test move before real move - we try 40 possibilities'''
         max_score = -1000000
-        for rotation in range(4): 
-            for x in range(-5,5): 
-                game_copy = board.clone()
-                old_score = game_copy.score
-                for i in range (rotation):
-                    game_copy.rotate(Rotation.Clockwise)
-
-                if x < 0:
-                    for i in range(abs(x)):
-                        game_copy.move(Direction.Left)
-                if x > 0:
-                    for i in range(x):
-                        game_copy.move(Direction.Right)
-                game_copy.move(Direction.Drop)
-
-                agg_height_score = self.agg_height(game_copy)
-                holes_score = self.holes(game_copy)
-                bum_score = self.bumpiness(game_copy)
-                complete_lines_score = self.complete_lines(game_copy.score - old_score)
-                score = agg_height_score + holes_score + bum_score + complete_lines_score # heuristic score
-                
-                if score > max_score:
-                    max_score = score
-                    best_rot = rotation
-                    best_x = x
-        return best_rot, best_x
-        
-    def agg_height(self,board):
-        return sum(self.column_height(board)) * a
+        try:
+            for rotation in range(4): 
+                for pos in range(-5,5):
+                    score_current, new_board = self.best_score(board, rotation, pos)
+                    lookahead_score = -1000000
+                    for rotation2 in range(4): 
+                        for pos2 in range(-5,5):
+                            lookahead_score = max(lookahead_score, self.best_score(new_board, rotation2, pos2)[0])
+                    score = score_current + lookahead_score
+                    if score > max_score:
+                        max_score = score
+                        best_rot = rotation
+                        best_pos = pos
+        except Exception:
+            best_rot = 0
+            best_pos = 0
+        return best_rot, best_pos
 
     def holes(self,board): 
         total_holes = 0
@@ -94,6 +102,9 @@ class Chris:
                 if y == board.height-1:
                     column_height.append(0)
         return column_height
+
+    def agg_height(self,board):
+        return sum(self.column_height(board)) * a 
                 
     def bumpiness(self, board):
         bump = 0            # adjacent column diff 
