@@ -21,10 +21,10 @@ class RandomPlayer(Player):
             Direction.Drop
         ])
 
-a = -0.551 # agg_height
+a = -0.55103 # agg_height
 b = 0.760666 # complete_lines
 c = -0.35663 # holes
-d = -0.18448277 # bumpiness
+d = -0.18448177 # bumpiness
 
 class Chris: # auto player class
 
