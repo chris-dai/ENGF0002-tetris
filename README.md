@@ -1,5 +1,2 @@
-# ENGF0002-tetris
-
-Tetris Auto-player src - part of ENGF0002 course assignment
----------------------
+Tetris auto-player developed using Python
 
